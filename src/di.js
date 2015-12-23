@@ -3,3 +3,7 @@
 
 const exports = {};
 export default exports;
+
+import { injectee } from './symbols';
+export { injectee };
+exports.injectee = injectee;
