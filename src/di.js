@@ -12,3 +12,7 @@ import { factory, service } from './injectee';
 export { factory, service };
 exports.factory = factory;
 exports.service = service;
+
+import { container } from './container';
+export { container };
+exports.container = container;

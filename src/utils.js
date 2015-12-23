@@ -6,3 +6,16 @@ import assert from 'power-assert';
 export function isFunction(value) {
     return typeof value === 'function';
 }
+
+export function once(func) {
+    assert(isFunction(func));
+    let first = true;
+    let value;
+    return () => {
+        if (first) {
+            value = func();
+            first = false;
+        }
+        return value;
+    };
+}
