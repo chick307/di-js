@@ -7,3 +7,8 @@ export default exports;
 import { injectee } from './symbols';
 export { injectee };
 exports.injectee = injectee;
+
+import { factory, service } from './injectee';
+export { factory, service };
+exports.factory = factory;
+exports.service = service;
