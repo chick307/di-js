@@ -5,9 +5,6 @@
       "auxiliaryCommentBefore": "(C) 2015 chick307 <chick307@gmail.com>\nLicensed under the MIT License. http://chick307.mit-license.org/"
     },
     "test": {
-      "plugins": [
-        "espower"
-      ],
       "sourceMaps": "inline"
     }
   },
