@@ -1,15 +1,13 @@
 // (C) 2015 chick307 <chick307@gmail.com>
 // Licensed under the MIT License. http://chick307.mit-license.org/
 
-import assert from 'assert';
-
 import defaultExports, * as exports from '../src/di';
 
 describe('container method', () => {
     it('is exported', () => {
-        assert(typeof defaultExports.container === 'function');
-        assert(typeof exports.container === 'function');
-        assert(defaultExports.container === exports.container);
+        expect(typeof defaultExports.container).toBe('function');
+        expect(typeof exports.container).toBe('function');
+        expect(defaultExports.container).toBe(exports.container);
     });
 
     describe('when called with values', () => {
@@ -27,15 +25,15 @@ describe('container method', () => {
         });
 
         it('creates container from values', () => {
-            assert(container.a === 1);
-            assert(container.b === 2);
-            assert(typeof container.c === 'function');
-            assert(container.c() === 3);
+            expect(container.a).toBe(1);
+            expect(container.b).toBe(2);
+            expect(typeof container.c).toBe('function');
+            expect(container.c()).toBe(3);
         });
 
         it('overwrites values which have the same names', () => {
-            assert(container.d === 5);
-            assert(container.e === 6);
+            expect(container.d).toBe(5);
+            expect(container.e).toBe(6);
         });
     });
 
