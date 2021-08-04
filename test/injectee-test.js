@@ -2,7 +2,6 @@
 // Licensed under the MIT License. http://chick307.mit-license.org/
 
 import assert from 'assert';
-import sinon from 'sinon';
 
 import defaultExports, * as exports from '../src/di';
 
@@ -14,17 +13,17 @@ describe('factory method', () => {
     });
 
     it('returns a wapper of the passed function', () => {
-        const spy = sinon.spy();
+        const spy = jest.fn();
         const a = exports.factory(spy);
         expect(a).toBeInstanceOf(Function);
-        expect(spy.callCount).toBe(0);
+        expect(spy).not.toHaveBeenCalled();
         a({ x: 1 });
-        expect(spy.callCount).toBe(1);
-        expect(spy.firstCall.calledWith({ x: 1 })).toBe(true);
+        expect(spy).toHaveBeenCalledTimes(1);
+        expect(spy).toHaveBeenCalledWith({ x: 1 });
     });
 
     it('returns an injectee object', () => {
-        const spy = sinon.spy();
+        const spy = jest.fn();
         const a = exports.factory(spy);
         assert(a[exports.injectee] === a);
     });
@@ -38,18 +37,21 @@ describe('service method', () => {
     });
 
     it('returns a wapper of the passed constructor', () => {
-        const spy = sinon.spy();
-        const a = exports.service(spy);
+        const spy = jest.fn();
+        const a = exports.service(class {
+            constructor(...args) {
+                spy(...args);
+            }
+        });
         expect(a).toBeInstanceOf(Function);
-        expect(spy.callCount).toBe(0);
+        expect(spy).not.toHaveBeenCalled();
         a({ x: 1 });
-        expect(spy.callCount).toBe(1);
-        expect(spy.firstCall.calledWith({ x: 1 })).toBe(true);
-        expect(spy.firstCall.calledWithNew()).toBe(true);
+        expect(spy).toHaveBeenCalledTimes(1);
+        expect(spy).toHaveBeenCalledWith({ x: 1 });
     });
 
     it('returns an injectee object', () => {
-        const spy = sinon.spy();
+        const spy = jest.fn();
         const a = exports.service(spy);
         assert(a[exports.injectee] === a);
     });

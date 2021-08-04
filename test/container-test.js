@@ -2,7 +2,6 @@
 // Licensed under the MIT License. http://chick307.mit-license.org/
 
 import assert from 'assert';
-import sinon from 'sinon';
 
 import defaultExports, * as exports from '../src/di';
 
@@ -42,18 +41,18 @@ describe('container method', () => {
 
     describe('when called with services', () => {
         let container;
-        /** @type {any} */
+        /** @type {{ [name: string]: jest.Mock }} */
         let spies;
 
         beforeEach(() => {
             const wrap = (v) => Object.assign(v, { [exports.injectee]: v });
             spies = {};
-            spies.a1 = wrap(sinon.spy(() => ({ a: 1 })));
-            spies.b1 = wrap(sinon.spy(({ a }) => ({ b: 1 })));
-            spies.c1 = wrap(sinon.spy(({ d }) => ({ c: 1 })));
-            spies.c2 = wrap(sinon.spy(({ b }) => ({ c: 2 })));
-            spies.d1 = wrap(sinon.spy(({ c }) => ({ d: 1 })));
-            spies.d2 = wrap(sinon.spy(({ d }) => ({ d: 2 })));
+            spies.a1 = wrap(jest.fn(() => ({ a: 1 })));
+            spies.b1 = wrap(jest.fn(({ a }) => ({ b: 1 })));
+            spies.c1 = wrap(jest.fn(({ d }) => ({ c: 1 })));
+            spies.c2 = wrap(jest.fn(({ b }) => ({ c: 2 })));
+            spies.d1 = wrap(jest.fn(({ c }) => ({ d: 1 })));
+            spies.d2 = wrap(jest.fn(({ d }) => ({ d: 2 })));
             container = exports.container(
                 { a: spies.a1 },
                 { b: spies.b1, c: spies.c1 },
@@ -63,56 +62,60 @@ describe('container method', () => {
         });
 
         it('produces a service lazily', () => {
-            assert(spies.a1.callCount === 0);
+            expect(spies.a1).not.toHaveBeenCalled();
             const { a } = container;
-            assert(spies.a1.callCount === 1);
-            assert(a === spies.a1.firstCall.returnValue);
+            expect(spies.a1).toHaveBeenCalledTimes(1);
+            expect(spies.a1).toHaveReturnedWith(a);
         });
 
         it('produces a service with dependency', () => {
             const { a } = container;
-            assert(spies.a1.callCount === 1);
-            assert(spies.b1.callCount === 0);
-            assert(a === spies.a1.firstCall.returnValue);
+            expect(spies.a1).toHaveBeenCalledTimes(1);
+            expect(spies.b1).not.toHaveBeenCalled();
+            expect(spies.a1).toHaveReturnedWith(a);
             const { b } = container;
-            assert(spies.a1.callCount === 1);
-            assert(spies.b1.callCount === 1);
-            assert(b === spies.b1.firstCall.returnValue);
+            expect(spies.a1).toHaveBeenCalledTimes(1);
+            expect(spies.b1).toHaveBeenCalledTimes(1);
+            expect(spies.b1).toHaveReturnedWith(b);
         });
 
         it('overwrites services which have the same names', () => {
-            assert(spies.a1.callCount === 0);
-            assert(spies.b1.callCount === 0);
-            assert(spies.c1.callCount === 0);
-            assert(spies.c2.callCount === 0);
+            expect(spies.a1).not.toHaveBeenCalled();
+            expect(spies.b1).not.toHaveBeenCalled();
+            expect(spies.c1).not.toHaveBeenCalled();
+            expect(spies.c2).not.toHaveBeenCalled();
             const { c } = container;
-            assert(spies.a1.callCount === 1);
-            assert(spies.b1.callCount === 1);
-            assert(spies.c1.callCount === 0);
-            assert(spies.c2.callCount === 1);
-            assert(c === spies.c2.firstCall.returnValue);
+            expect(spies.a1).toHaveBeenCalledTimes(1);
+            expect(spies.b1).toHaveBeenCalledTimes(1);
+            expect(spies.c1).not.toHaveBeenCalled();
+            expect(spies.c2).toHaveBeenCalledTimes(1);
+            expect(spies.c2).toHaveReturnedWith(c);
         });
 
         it('resolves services even which has the same names', () => {
-            assert(spies.a1.callCount === 0);
-            assert(spies.b1.callCount === 0);
-            assert(spies.c1.callCount === 0);
-            assert(spies.c2.callCount === 0);
-            assert(spies.d1.callCount === 0);
-            assert(spies.d2.callCount === 0);
+            expect(spies.a1).not.toHaveBeenCalled();
+            expect(spies.b1).not.toHaveBeenCalled();
+            expect(spies.c1).not.toHaveBeenCalled();
+            expect(spies.c2).not.toHaveBeenCalled();
+            expect(spies.d1).not.toHaveBeenCalled();
+            expect(spies.d2).not.toHaveBeenCalled();
             const { d } = container;
-            assert(spies.a1.callCount === 1);
-            assert(spies.b1.callCount === 1);
-            assert(spies.c1.callCount === 0);
-            assert(spies.c2.callCount === 1);
-            assert(spies.d1.callCount === 1);
-            assert(spies.d2.callCount === 1);
-            assert(d === spies.d2.firstCall.returnValue);
-            assert(spies.d2.firstCall.args[0].d ===
-                spies.d1.firstCall.returnValue);
-            assert(spies.d1.firstCall.args[0].d === undefined);
-            assert(spies.d1.firstCall.args[0].c ===
-                spies.c2.firstCall.returnValue);
+            expect(spies.a1).toHaveBeenCalledTimes(1);
+            expect(spies.b1).toHaveBeenCalledTimes(1);
+            expect(spies.c1).not.toHaveBeenCalled();
+            expect(spies.c2).toHaveBeenCalledTimes(1);
+            expect(spies.d1).toHaveBeenCalledTimes(1);
+            expect(spies.d2).toHaveBeenCalledTimes(1);
+            expect(spies.d2).toHaveReturnedWith(d);
+            expect(spies.d1.mock.results[0]).toEqual({
+                type: 'return',
+                value: spies.d2.mock.calls[0][0].d,
+            });
+            expect(spies.d1.mock.calls[0][0].d).toBeUndefined();
+            expect(spies.c2.mock.results[0]).toEqual({
+                type: 'return',
+                value: spies.d1.mock.calls[0][0].c,
+            });
         });
     });
 });
