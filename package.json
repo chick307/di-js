@@ -38,7 +38,7 @@
     "clean": "rm -rf lib",
     "lint": "eslint src test",
     "make": "babel --out-dir lib --extensions .js,.ts src",
-    "premake": "npm run lint && npm test",
+    "premake": "npm run lint && npm run types && npm test",
     "prepublish": "npm run clean && npm run make",
     "test": "NODE_ENV=test jest",
     "types": "tsc --noEmit"
