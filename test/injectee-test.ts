@@ -21,9 +21,11 @@ describe('factory method', () => {
     });
 
     it('returns an injectee object', () => {
-        const spy = jest.fn();
+        const spy = jest.fn(() => ({ x: 1 }));
         const a = exports.factory(spy);
-        expect(a[exports.injectee]).toBe(a);
+        expect(a[exports.injectee]({ y: 2 })).toEqual({ x: 1 });
+        expect(spy).toHaveBeenCalledTimes(1);
+        expect(spy).toHaveBeenCalledWith({ y: 2 });
     });
 });
 
@@ -37,20 +39,31 @@ describe('service method', () => {
     it('returns a wapper of the passed constructor', () => {
         const spy = jest.fn();
         const a = exports.service(class {
-            constructor(...args) {
+            constructor(...args: unknown[]) {
                 spy(...args);
             }
         });
         expect(a).toBeInstanceOf(Function);
         expect(spy).not.toHaveBeenCalled();
-        a({ x: 1 });
+        new a({ x: 1 });
         expect(spy).toHaveBeenCalledTimes(1);
         expect(spy).toHaveBeenCalledWith({ x: 1 });
     });
 
     it('returns an injectee object', () => {
         const spy = jest.fn();
-        const a = exports.service(spy);
-        expect(a[exports.injectee]).toBe(a);
+        class A {
+            x = 1;
+
+            constructor(...args: unknown[]) {
+                spy(...args);
+            }
+        }
+        const a = exports.service(A);
+        const v = a[exports.injectee]({ y: 2 });
+        expect(v).toBeInstanceOf(A);
+        expect(v).toEqual({ x: 1 });
+        expect(spy).toHaveBeenCalledTimes(1);
+        expect(spy).toHaveBeenCalledWith({ y: 2 });
     });
 });

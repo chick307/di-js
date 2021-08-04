@@ -11,7 +11,8 @@ describe('container method', () => {
     });
 
     describe('when called with values', () => {
-        let container;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        let container: Record<string, any>;
 
         beforeEach(() => {
             container = exports.container(
@@ -20,7 +21,7 @@ describe('container method', () => {
                 { c: () => 3 },
                 { d: 4, e: 5 },
                 { d: 5 },
-                { e: 6 }
+                { e: 6 },
             );
         });
 
@@ -38,24 +39,23 @@ describe('container method', () => {
     });
 
     describe('when called with services', () => {
-        let container;
-        /** @type {{ [name: string]: jest.Mock }} */
-        let spies;
+        let container: Record<string, unknown>;
+        let spies: Record<string, jest.Mock>;
 
         beforeEach(() => {
-            const wrap = (v) => Object.assign(v, { [exports.injectee]: v });
+            const wrap = <T>(v: T) => Object.assign(v, { [exports.injectee]: v });
             spies = {};
             spies.a1 = wrap(jest.fn(() => ({ a: 1 })));
-            spies.b1 = wrap(jest.fn(({ a }) => ({ b: 1 })));
-            spies.c1 = wrap(jest.fn(({ d }) => ({ c: 1 })));
-            spies.c2 = wrap(jest.fn(({ b }) => ({ c: 2 })));
-            spies.d1 = wrap(jest.fn(({ c }) => ({ d: 1 })));
-            spies.d2 = wrap(jest.fn(({ d }) => ({ d: 2 })));
+            spies.b1 = wrap(jest.fn(({ a }) => ({ b: a })));
+            spies.c1 = wrap(jest.fn(({ d }) => ({ c: d })));
+            spies.c2 = wrap(jest.fn(({ b }) => ({ c: b + 1 })));
+            spies.d1 = wrap(jest.fn(({ c }) => ({ d: c })));
+            spies.d2 = wrap(jest.fn(({ d }) => ({ d: d + 1 })));
             container = exports.container(
                 { a: spies.a1 },
                 { b: spies.b1, c: spies.c1 },
                 { d: spies.d1 },
-                { c: spies.c2, d: spies.d2 }
+                { c: spies.c2, d: spies.d2 },
             );
         });
 
