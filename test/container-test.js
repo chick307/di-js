@@ -13,7 +13,7 @@ describe('container method', () => {
         assert(defaultExports.container === exports.container);
     });
 
-    context('when called with values', () => {
+    describe('when called with values', () => {
         let container;
 
         beforeEach(() => {
@@ -40,7 +40,7 @@ describe('container method', () => {
         });
     });
 
-    context('when called with services', () => {
+    describe('when called with services', () => {
         let container;
         let spies;
 
