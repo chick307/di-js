@@ -1,6 +1,6 @@
 module.exports = {
     testMatch: ['<rootDir>/test/**/*.js'],
     transform: {
-        '\\.js$': 'babel-jest',
+        '\\.[jt]s$': 'babel-jest',
     },
 };

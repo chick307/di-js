@@ -16,6 +16,7 @@ module.exports = {
                 node: '12',
             },
         }],
+        '@babel/preset-typescript',
     ],
     sourceRoot: '.',
 }
