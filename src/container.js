@@ -4,6 +4,7 @@
 import * as symbols from './symbols';
 import * as utils from './utils';
 
+/** @type {(...serviceLists: any[]) => any} */
 export function container(...serviceLists) {
     const con = {};
     const keys = new Set();

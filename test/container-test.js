@@ -42,6 +42,7 @@ describe('container method', () => {
 
     describe('when called with services', () => {
         let container;
+        /** @type {any} */
         let spies;
 
         beforeEach(() => {

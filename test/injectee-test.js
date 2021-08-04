@@ -16,11 +16,11 @@ describe('factory method', () => {
     it('returns a wapper of the passed function', () => {
         const spy = sinon.spy();
         const a = exports.factory(spy);
-        assert(typeof a === 'function');
-        assert(spy.callCount === 0);
+        expect(a).toBeInstanceOf(Function);
+        expect(spy.callCount).toBe(0);
         a({ x: 1 });
-        assert(spy.callCount === 1);
-        assert(spy.firstCall.calledWith({ x: 1 }));
+        expect(spy.callCount).toBe(1);
+        expect(spy.firstCall.calledWith({ x: 1 })).toBe(true);
     });
 
     it('returns an injectee object', () => {
@@ -40,12 +40,12 @@ describe('service method', () => {
     it('returns a wapper of the passed constructor', () => {
         const spy = sinon.spy();
         const a = exports.service(spy);
-        assert(typeof a === 'function');
-        assert(spy.callCount === 0);
+        expect(a).toBeInstanceOf(Function);
+        expect(spy.callCount).toBe(0);
         a({ x: 1 });
-        assert(spy.callCount === 1);
-        assert(spy.firstCall.calledWith({ x: 1 }));
-        assert(spy.firstCall.calledWithNew());
+        expect(spy.callCount).toBe(1);
+        expect(spy.firstCall.calledWith({ x: 1 })).toBe(true);
+        expect(spy.firstCall.calledWithNew()).toBe(true);
     });
 
     it('returns an injectee object', () => {
